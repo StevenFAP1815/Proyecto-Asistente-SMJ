@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAI - Automatización Inteligente para tu Negocio</title>
+   <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+        }
+        header {
+            background-color: #667eea;
+            color: white;
+            padding: 1rem 0;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+        }
+        .hero {
+            background-image: url('hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 4rem 0;
+        }
+        .cta-button {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .section {
+            padding: 3rem 0;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">QAI</div>
+                <ul class="nav-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#nosotros">Nosotros</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="inicio" class="hero">
+        <div class="container">
+            <h1>QAI</h1>
+            <p>Automatización Inteligente con IA para Revolucionar tu Negocio</p>
+            <a href="#servicios" class="cta-button">Descubre Nuestros Servicios</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <section id="servicios" class="section fade-in">
+            <h2>Nuestros Servicios</h2>
+            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 2rem; color: #666;">
+                Transformamos tu negocio con soluciones de inteligencia artificial de vanguardia
+            </p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🤖</div>
+                    <h3>Atención al Cliente con IA</h3>
+                    <p>Chatbots inteligentes y sistemas de respuesta automática que brindan atención 24/7 a tus clientes, mejorando la satisfacción y reduciendo tiempos de respuesta.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">💬</div>
+                    <h3>Sistemas de Consulta Automatizados</h3>
+                    <p>Plataformas inteligentes que procesan y responden consultas de manera automática, optimizando la gestión de información y consultas frecuentes.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">💳</div>
+                    <h3>Automatización de Pasarelas de Pago</h3>
+                    <p>Integración y automatización de sistemas de pago seguros y eficientes, facilitando transacciones y mejorando la experiencia del usuario.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="nosotros" class="section fade-in">
+            <h2>Quiénes Somos</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3 style="color: #667eea; margin-bottom: 1rem;">Nuestra Misión</h3>
+                    <p>En QAI, somos especialistas en transformación digital a través de la inteligencia artificial. Nos dedicamos a crear soluciones automatizadas que potencian el crecimiento de tu negocio, optimizando procesos y mejorando la experiencia de tus clientes.</p>
+                    
+                    <h3 style="color: #667eea; margin-bottom: 1rem; margin-top: 2rem;">Nuestra Visión</h3>
+                    <p>Ser la empresa líder en automatización inteligente, ayudando a las organizaciones a alcanzar su máximo potencial a través de soluciones innovadoras de IA que simplifican operaciones complejas.</p>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span>Proyectos Exitosos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span>Soporte Técnico</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99%</span>
+                        <span>Satisfacción Cliente</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="section fade-in">
+            <h2>Contacta con Nosotros</h2>
+            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 3rem; color: #666;">
+                ¿Listo para transformar tu negocio? Hablemos sobre tu proyecto
+            </p>
+            
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <h3>Email</h3>
+                    <p>contacto@QAI.tech</p>
+                    <p>ventas@QAI.tech</p>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <h3>Teléfono</h3>
+                    <p>+1 (555) 123-4567</p>
+                    <p>+1 (555) 890-1234</p>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">🌐</div>
+                    <h3>Soporte Técnico</h3>
+                    <p>soporte@QAI.tech</p>
+                    <p>Ref: QU-TECH-2024</p>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">💼</div>
+                    <h3>Consultoría</h3>
+                    <p>consultoria@QAI.tech</p>
+                    <p>Ref: QU-CONS-2024</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 QAI - Automatización Inteligente. Todos los derechos reservados.</p>
+            <p>Transformando el futuro con Inteligencia Artificial</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Add hover effect to service cards
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

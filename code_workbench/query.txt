@@ -1,0 +1,153 @@
+-- Crear la base de datos
+CREATE DATABASE IF NOT EXISTS bdfobo;
+USE bdfobo;
+
+-- Tabla de clientes
+CREATE TABLE IF NOT EXISTS clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL UNIQUE,
+    direccion TEXT,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tabla de productos
+CREATE TABLE IF NOT EXISTS productos (
+    id_producto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL CHECK (precio > 0),
+    stock INT DEFAULT 0 CHECK (stock >= 0),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tabla de pedidos
+CREATE TABLE IF NOT EXISTS pedidos (
+    id_pedido INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado ENUM('pendiente', 'enviado', 'entregado', 'cancelado') DEFAULT 'pendiente',
+    total DECIMAL(12, 2) DEFAULT 0.00 CHECK (total >= 0),
+    notas TEXT,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- Tabla detalle del pedido (relación muchos a muchos entre pedido y producto)
+CREATE TABLE IF NOT EXISTS detalle_pedido (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    precio_unitario DECIMAL(10,2) NOT NULL CHECK (precio_unitario > 0),
+    subtotal DECIMAL(12,2) GENERATED ALWAYS AS (cantidad * precio_unitario) STORED,
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- Tabla para registrar mensajes (opcional, para trazabilidad)
+CREATE TABLE IF NOT EXISTS mensajes (
+    id_mensaje INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT,
+    contenido TEXT NOT NULL,
+    tipo ENUM('entrada', 'salida') NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    leido BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- Tabla para promociones (opcional para marketing)
+CREATE TABLE IF NOT EXISTS promociones (
+    id_promocion INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    descuento DECIMAL(5,2) CHECK (descuento >= 0 AND descuento <= 100),
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    activa BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CHECK (fecha_fin >= fecha_inicio)
+);
+
+-- Tabla para registrar a qué clientes se les envió una promoción
+CREATE TABLE IF NOT EXISTS clientes_promociones (
+    id_cliente INT,
+    id_promocion INT,
+    fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    utilizada BOOLEAN DEFAULT FALSE,
+    fecha_utilizacion TIMESTAMP NULL,
+    PRIMARY KEY (id_cliente, id_promocion),
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_promocion) REFERENCES promociones(id_promocion) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Crear índices para mejorar el rendimiento
+CREATE INDEX idx_clientes_telefono ON clientes(telefono);
+CREATE INDEX idx_productos_nombre ON productos(nombre);
+CREATE INDEX idx_pedidos_cliente ON pedidos(id_cliente);
+CREATE INDEX idx_pedidos_fecha ON pedidos(fecha_pedido);
+CREATE INDEX idx_pedidos_estado ON pedidos(estado);
+CREATE INDEX idx_detalle_pedido_pedido ON detalle_pedido(id_pedido);
+CREATE INDEX idx_detalle_pedido_producto ON detalle_pedido(id_producto);
+CREATE INDEX idx_mensajes_cliente ON mensajes(id_cliente);
+CREATE INDEX idx_mensajes_fecha ON mensajes(fecha);
+CREATE INDEX idx_promociones_fechas ON promociones(fecha_inicio, fecha_fin);
+CREATE INDEX idx_promociones_activa ON promociones(activa);
+
+-- Trigger para actualizar el total del pedido cuando se modifica el detalle
+DELIMITER //
+CREATE TRIGGER actualizar_total_pedido_insert
+    AFTER INSERT ON detalle_pedido
+    FOR EACH ROW
+BEGIN
+    UPDATE pedidos 
+    SET total = (
+        SELECT COALESCE(SUM(subtotal), 0) 
+        FROM detalle_pedido 
+        WHERE id_pedido = NEW.id_pedido
+    )
+    WHERE id_pedido = NEW.id_pedido;
+END//
+
+CREATE TRIGGER actualizar_total_pedido_update
+    AFTER UPDATE ON detalle_pedido
+    FOR EACH ROW
+BEGIN
+    UPDATE pedidos 
+    SET total = (
+        SELECT COALESCE(SUM(subtotal), 0) 
+        FROM detalle_pedido 
+        WHERE id_pedido = NEW.id_pedido
+    )
+    WHERE id_pedido = NEW.id_pedido;
+END//
+
+CREATE TRIGGER actualizar_total_pedido_delete
+    AFTER DELETE ON detalle_pedido
+    FOR EACH ROW
+BEGIN
+    UPDATE pedidos 
+    SET total = (
+        SELECT COALESCE(SUM(subtotal), 0) 
+        FROM detalle_pedido 
+        WHERE id_pedido = OLD.id_pedido
+    )
+    WHERE id_pedido = OLD.id_pedido;
+END//
+
+-- Trigger para actualizar stock cuando se confirma un pedido
+CREATE TRIGGER actualizar_stock_pedido
+    AFTER UPDATE ON pedidos
+    FOR EACH ROW
+BEGIN
+    IF OLD.estado != 'entregado' AND NEW.estado = 'entregado' THEN
+        UPDATE productos p
+        INNER JOIN detalle_pedido dp ON p.id_producto = dp.id_producto
+        SET p.stock = p.stock - dp.cantidad
+        WHERE dp.id_pedido = NEW.id_pedido;
+    END IF;
+END//
+
+DELIMITER ;
